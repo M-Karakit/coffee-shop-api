@@ -19,6 +19,8 @@ class AuthService
 
             $token = $user->createToken('auth-token')->plainTextToken;
 
+            $user->touch('email_verified_at');
+
             return [
                 'token' => $token,
                 'user' => $user
