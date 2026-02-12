@@ -17,6 +17,11 @@ class Category extends Model
         return $this->hasMany(Product::class);
     }
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     protected static function booted()
     {
         static::creating(function($category){
@@ -32,8 +37,7 @@ class Category extends Model
         });
     }
 
-    public function scopeFilter(Builder $query, array $filters)
-{
+    public function scopeFilter(Builder $query, array $filters) {
     return $query->when($filters['search'] ?? null, function ($q, $search) {
         $q->where(function ($query) use ($search) {
             $query->where('name', 'LIKE', "%$search%")

@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Category;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\StoreCategoryRequest;
+use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Http\Resources\Category\categoryResource;
+use App\Models\Category\Category;
 use App\Services\Category\CategoryService;
 use Illuminate\Http\Request;
 
@@ -44,24 +46,35 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Category $category)
     {
-        //
+        $result = $this->categoryService->showCategory($category);
+        return response()->json([
+            'category' => new categoryResource($result)
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
-        //
+        $data = $request->validated();
+
+        $result = $this->categoryService->updateCategory($category, $data);
+
+        return response()->json([
+            'message' => 'category updated successfully',
+            'updated_category' => new categoryResource($result)
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Category $category)
     {
-        //
+        $this->categoryService->deleteCategory($category);
+        return abort(204);
     }
 }
